@@ -1,9 +1,13 @@
-#include "cinder/app/AppBasic.h"
+#include <cinder/app/AppBasic.h>
 #include <list>
+#include <cinder/Channel.h>
 
-using namespace ci;
+#include "World.hpp"
+
+#include <map>
+#include <string>
+
 using namespace ci::app;
-using namespace std;
 
 // We'll create a new Cinder Application by deriving from the AppBasic class
 class BasicApp : public AppBasic {
@@ -12,13 +16,23 @@ class BasicApp : public AppBasic {
     void keyDown(KeyEvent event);
     void draw();
 
+    void update() {
+        world.update();
+    }
+
     // This will maintain a list of points which we will draw line segments between
-    list<Vec2f> points;
+    World world;
+
+    std::map<std::string, std::shared_ptr<Drawable>> drawables;
+
+    BasicApp() {
+        drawables["point"] = std::make_shared<DrawablePoint>();
+    }
 };
 
 void BasicApp::mouseDrag(MouseEvent event)
 {
-    points.push_back(event.getPos());
+    world.addObject<Unit>(drawables["point"]);
 }
 
 void BasicApp::keyDown(KeyEvent event)
@@ -29,14 +43,8 @@ void BasicApp::keyDown(KeyEvent event)
 
 void BasicApp::draw()
 {
-    gl::clear(Color(0.1f, 0.1f, 0.15f));
-
-    gl::color( 1.0f, 0.5f, 0.25f);
-    gl::begin(GL_LINE_STRIP);
-    for (auto point : points) {
-        gl::vertex(point);
-    }
-    gl::end();
+    gl::clear(ci::Color(0.1f, 0.1f, 0.15f));
+    world.draw();
 }
 
 // This line tells Cinder to actually create the application
