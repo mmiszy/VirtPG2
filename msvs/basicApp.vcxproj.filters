@@ -29,5 +29,11 @@
     <ClInclude Include="..\src\helpers\make_unique.hpp">
       <Filter>Header Files\helpers</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\Graphics.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Unit.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

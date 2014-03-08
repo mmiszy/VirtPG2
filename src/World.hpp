@@ -1,49 +1,27 @@
 #pragma once
 #include <cinder/Vector.h>
-#include <cinder/Quaternion.h>
-#include <cinder/Rand.h>
-
 #include "helpers/make_unique.hpp"
+#include <map>
+#include <boost/range/adaptor/map.hpp>
+#include <boost/optional.hpp>
+using boost::adaptors::map_values;
 
+#include "Network.hpp"
+
+// TEMP should be only in drawable
 #include <cinder/gl/gl.h>
 namespace gl = ci::gl;
-
-class Drawable {
-public:
-    virtual void draw(ci::Vec2f position) = 0;
-};
-
-class DrawableWithColor : public Drawable {
-public:
-    virtual void setColor(ci::Color color) = 0;
-};
-
-class DrawablePoint : public Drawable {
-public:
-    virtual void draw(ci::Vec2f position) {
-        gl::begin(GL_POINTS);
-        gl::vertex(position);
-        gl::end();
-    }
-};
-
 
 class Terrain {
 public:
     float sample(ci::Vec2f) { return 42.f; }
 };
 
-class World;
-
 class AbstractUnit {
 public:
-    virtual void update() = 0;
+    virtual void update(boost::optional<Packet const&>) = 0;
     virtual void draw() = 0;
 };
-
-#include <map>
-#include <boost/range/adaptor/map.hpp>
-using boost::adaptors::map_values;
 
 using UnitID = unsigned int;
 
@@ -74,7 +52,7 @@ public:
 
     void update() {
         for (auto& unit : units | map_values) {
-            unit->update();
+            unit->update(boost::none);
         }
     }
 
@@ -96,28 +74,4 @@ public:
     }
 };
 
-class Unit : public AbstractUnit {
-    std::shared_ptr<Drawable> drawable;
 
-    World::Context<World::TerrainContext> context;
-
-public:
-    ci::Vec2f position;
-
-    virtual void update() {
-        auto height = context.sample(position);
-        position += ci::randVec2f();
-    }
-
-    virtual void draw() {
-        drawable->draw(position);
-    }
-
-    Unit(World& w, std::shared_ptr<Drawable> drawable) :
-        context(w)
-        , drawable(std::move(drawable))
-        , position(ci::Vec2f(ci::randFloat() * 300.f + 200.f,
-        ci::randFloat() * 300.f + 200.f))
-    {
-    }
-};

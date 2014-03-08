@@ -3,6 +3,8 @@
 #include <cinder/Channel.h>
 
 #include "World.hpp"
+#include "Graphics.hpp"
+#include "Unit.hpp"
 
 #include <map>
 #include <string>

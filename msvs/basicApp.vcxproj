@@ -187,7 +187,9 @@
     <ClCompile Include="..\src\basicApp.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\src\Graphics.hpp" />
     <ClInclude Include="..\src\helpers\make_unique.hpp" />
+    <ClInclude Include="..\src\Unit.hpp" />
     <ClInclude Include="..\src\World.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
